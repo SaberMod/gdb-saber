@@ -1,9 +1,11 @@
-2014-06-09  Pedro Alves  <palves@redhat.com>
+2014-06-16  Pedro Alves  <palves@redhat.com>
 
-	* linux-nat.c (linux_child_follow_fork): Initialize status with
-	W_STOPCODE (0) instead of 0.  Remove shodowing 'status' local from
-	inner block.  Only pass the signal to PTRACE_DETACH if in pass
-	state.
+	* gdb.base/break-main-file-remove-fail.c: New file.
+	* gdb.base/break-main-file-remove-fail.exp: New file.
+	* gdb.base/break-unload-file.exp: Use build_executable instead of
+	prepare_for_testing.
+	(test_break): New parameter "initial_load".  Handle it.
+	(top level): Add initial_load cmdline/file axis.
 
 2014-06-09  Gary Benson  <gbenson@redhat.com>
 
