@@ -1,3 +1,76 @@
+2014-07-17  Jan Kratochvil  <jan.kratochvil@redhat.com>
+
+	PR gdb/17170
+	* gdb.base/statistics.exp: New file.
+
+2014-07-17  Doug Evans  <dje@google.com>
+
+	PR gdb/17170
+	* gdb.base/maint.exp: Update testing of per-command stats.
+
+2014-07-14  Pedro Alves  <palves@redhat.com>
+
+	* gdb.base/paginate-after-ctrl-c-running.c: New file.
+	* gdb.base/paginate-after-ctrl-c-running.exp: New file.
+
+2014-07-14  Pedro Alves  <palves@redhat.com>
+
+	* gdb.base/double-prompt-target-event-error.c: New file.
+	* gdb.base/double-prompt-target-event-error.exp: New file.
+
+2014-07-14  Pedro Alves  <palves@redhat.com>
+
+	PR gdb/17072
+	* gdb.base/paginate-inferior-exit.c: New file.
+	* gdb.base/paginate-inferior-exit.exp: New file.
+
+2014-07-14  Pedro Alves  <palves@redhat.com>
+
+	PR gdb/17072
+	* gdb.base/paginate-bg-execution.c: New file.
+	* gdb.base/paginate-bg-execution.exp: New file.
+
+2014-07-14  Pedro Alves  <palves@redhat.com>
+
+	PR gdb/17072
+	* gdb.base/paginate-execution-startup.c: New file.
+	* gdb.base/paginate-execution-startup.exp: New file.
+	* lib/gdb.exp (pagination_prompt): New global.
+	(default_gdb_spawn): New procedure, factored out from
+	default_gdb_spawn.
+	(default_gdb_start): Adjust to call default_gdb_spawn.
+	(gdb_spawn): New procedure.
+
+2014-07-14  Pedro Alves  <palves@redhat.com>
+
+	* lib/gdb.exp (gdb_assert): New procedure.
+	* gdb.trace/backtrace.exp (gdb_backtrace_tdp_4): Use it.
+
+2014-07-14  Pedro Alves  <palves@redhat.com>
+
+	* gdb.base/execution-termios.c: New file.
+	* gdb.base/execution-termios.exp: New file.
+
+2014-07-14  Tom Tromey  <tromey@redhat.com>
+
+	* gdb.cp/vla-cxx.cc: New file.
+	* gdb.cp/vla-cxx.exp: New file.
+
+2014-07-14  Tom Tromey  <tromey@redhat.com>
+
+	* gdb.reverse/rerun-prec.c: New file.
+	* gdb.reverse/rerun-prec.exp: New file.
+
+2014-07-11  Pedro Alves  <palves@redhat.com>
+
+	* gdb.threads/kill.c: New file.
+	* gdb.threads/kill.exp: New file.
+
+2014-07-09  Pedro Alves  <palves@redhat.com>
+
+	* gdb.base/attach-wait-input.exp: New file.
+	* gdb.base/attach-wait-input.c: New file.
+
 2014-06-23  Siva Chandra Reddy  <sivachandra@google.com>
 
 	* gdb.python/py-xmethods.exp: Use "progspace" instead of the

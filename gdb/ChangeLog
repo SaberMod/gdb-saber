@@ -1,3 +1,119 @@
+2014-07-18  Joel Brobecker  <brobecker@adacore.com>
+
+	* version.in: Set GDB version number to 7.7.91.DATE-cvs.
+
+2014-07-18  Joel Brobecker  <brobecker@adacore.com>
+
+	GDB 7.7.91 released.
+
+2014-07-18  Joel Brobecker  <brobecker@adacore.com>
+
+	* version.in: Set GDB version number to 7.7.91.
+
+2014-07-17  Doug Evans  <dje@google.com>
+
+	PR gdb/17170
+	* maint.c (count_symtabs_and_blocks): Handle NULL
+	current_program_space.
+	(report_command_stats): Check global enabled flag in addition to
+	recorded enabled flag.
+	(make_command_stats_cleanup): Handle msg_type == 0, startup.
+
+2014-07-14  Pedro Alves  <palves@redhat.com>
+
+	* utils.c (prompt_for_continue): Call target_terminal_ours.
+
+2014-07-14  Pedro Alves  <palves@redhat.com>
+
+	* inf-loop.c (inferior_event_handler): Use TRY_CATCH instead of
+	catch_errors.  Don't re-enable stdin or notify observers where,
+	and rethrow error.
+	(fetch_inferior_event_wrapper): Delete.
+
+2014-07-14  Pedro Alves  <palves@redhat.com>
+
+	PR gdb/17072
+	* top.c: Include "inf-loop.h".
+	(struct gdb_readline_wrapper_cleanup) <target_is_async_orig>: New
+	field.
+	(gdb_readline_wrapper_cleanup): Make the target async again, if it
+	was async before.
+	(gdb_readline_wrapper): Store whether the target is async, and
+	make it sync.
+
+2014-07-14  Pedro Alves  <palves@redhat.com>
+
+	PR gdb/17072
+	* top.c (gdb_readline_wrapper_line): Tweak comment.
+	(gdb_readline_wrapper_cleanup): If readline is enabled, reinstall
+	the input handler callback.
+
+2014-07-14  Pedro Alves  <palves@redhat.com>
+
+	PR gdb/17072
+	* main.c: Include event-top.h.
+	(handle_command_errors): New function.
+	(catch_command_errors, catch_command_errors_const): Use it.
+
+2014-07-14  Pedro Alves  <palves@redhat.com>
+
+	* exceptions.c (catch_command_errors, catch_command_errors_const):
+	Moved to main.c.
+	* exceptions.h (catch_command_errors_ftype)
+	(catch_command_errors_const_ftype): Moved to main.c.
+	(catch_command_errors, catch_command_errors_const): Delete
+	declarations.
+	* main.c (catch_command_errors_ftype)
+	(catch_command_errors_const_ftype): Moved here from exceptions.h.
+	(catch_command_errors, catch_command_errors_const)): Moved here
+	from exceptions.c and make static.
+
+2014-07-14  Pedro Alves  <palves@redhat.com>
+
+	* exceptions.c (print_any_exception): Delete.
+	(catch_exceptions_with_msg): Use exception_print instead of
+	print_any_exception.
+	(catch_errors): Use exception_fprintf instead of
+	print_any_exception.
+	(catch_command_errors, catch_command_errors_const): Use
+	exception_print instead of print_any_exception.
+
+2014-07-14  Pedro Alves  <palves@redhat.com>
+
+	* infcall.c (run_inferior_call): Set 'sync_execution' while
+	running the inferior call.
+
+2014-07-14  Tom Tromey  <tromey@redhat.com>
+
+	PR exp/17106:
+	* gdbtypes.c (is_dynamic_type_internal): New function, from
+	is_dynamic_type.
+	(is_dynamic_type): Rewrite.
+	(resolve_dynamic_union): Use resolve_dynamic_type_internal.
+	(resolve_dynamic_struct): Likewise.
+	(resolve_dynamic_type_internal): New function, from
+	resolve_dynamic_type.
+	(resolve_dynamic_type): Rewrite.
+
+2014-07-14  Tom Tromey  <tromey@redhat.com>
+
+	* target.c (target_require_runnable): Also check record_stratum.
+	Update comment.
+
+2014-07-09  Pedro Alves  <palves@redhat.com>
+
+	* infcmd.c (attach_command_post_wait): Don't call
+	target_terminal_inferior here.
+	(attach_command): Call it here instead.
+
+2014-07-07  Pedro Alves  <palves@redhat.com>
+
+	PR gdb/17096
+	* remote.c (async_handle_remote_sigint)
+	(async_handle_remote_sigint_twice): Call
+	gdb_call_async_signal_handler instead of
+	mark_async_signal_handler.
+
 2014-06-26  Tom Tromey  <tromey@redhat.com>
 
 	PR symtab/16902:
