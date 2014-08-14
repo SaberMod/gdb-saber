@@ -1,5 +1,4 @@
-;; Various experimental utilities.
-;; Anything in this file can change or disappear.
+;; Internal support routines.
 ;;
 ;; Copyright (C) 2014 Free Software Foundation, Inc.
 ;;
@@ -18,17 +17,17 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-;; TODO: Split this file up by function?
-;; E.g., (gdb experimental ports), etc.
+(define-module (gdb support))
 
-(define-module (gdb experimental)
-  #:use-module (gdb))
+;; Symbolic values for the ARG parameter of assert-type.
 
-;; These are defined in C.
-(define-public with-gdb-output-to-port (@@ (gdb) %with-gdb-output-to-port))
-(define-public with-gdb-error-to-port (@@ (gdb) %with-gdb-error-to-port))
+(define-public SCM_ARG1 1)
+(define-public SCM_ARG2 2)
 
-(define-public (with-gdb-output-to-string thunk)
-  "Calls THUNK and returns all GDB output as a string."
-  (call-with-output-string
-   (lambda (p) (with-gdb-output-to-port p thunk))))
+;; Utility to check the type of an argument, akin to SCM_ASSERT_TYPE.
+
+(define-public (assert-type test-result arg pos func-name expecting)
+  (if (not test-result)
+      (scm-error 'wrong-type-arg func-name
+		 "Wrong type argument in position ~a (expecting ~a): ~s"
+		 (list pos expecting arg) (list arg))))
