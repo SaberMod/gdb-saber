@@ -1,3 +1,40 @@
+2014-09-09  Doug Evans  <xdje42@gmail.com>
+
+	PR guile/17367
+	* acinclude.m4 (GDB_GUILE_PROGRAM_NAMES): Pass guile version as
+	last parameter to pkg-config, not first.
+	* configure.ac: Pass --with-guile provided pkg-config path to
+	GDB_GUILE_PROGRAM_NAMES.
+	* configure: Regenerate.
+
+2014-09-09  Doug Evans  <xdje42@gmail.com>
+
+	PR 17247
+	* guile.c: #include <signal.h>.
+	(_initialize_guile): Block SIGCHLD while initializing Guile.
+
+	Replaces the following, which is reverted.
+
+	2014-07-26  Doug Evans  <xdje42@gmail.com>
+
+	PR 17185
+	* configure.ac: Add check for header gc/gc.h.
+	Add check for function setenv.
+	* configure: Regenerate.
+	* config.in: Regenerate.
+	* guile/guile.c (_initialize_guile): Add workaround for libgc 7.4.0.
+
+2014-09-07  Jan Kratochvil  <jan.kratochvil@redhat.com>
+
+	PR python/17355
+	* python/py-framefilter.c (py_print_single_arg): Handle NULL FA->VAL.
+	Fix goto out of TRY_CATCH.
+
+2014-08-30  Siva Chandra Reddy  <sivachandra@google.com>
+
+	* python/lib/gdb/command/xmethods.py (set_xm_status1): Use the
+	'items'	methods instead of 'iteritems' method on dictionaries.
+
 2014-08-27  Yao Qi  <yao@codesourcery.com>
 
 	* ctf.c (CTF_FILE_MIN_SIZE): Remove.
