@@ -1,3 +1,20 @@
+2015-01-26  Wei-cheng Wang  <cole945@gmail.com>
+
+	Backport from mainline:
+
+	* lib/gdb.exp (supports_process_record): Return true for
+	powerpc*-*-linux*.
+	(supports_reverse): Likewise.
+
+2015-01-23  Pedro Alves  <palves@redhat.com>
+
+	* gdb.threads/continue-pending-after-query.c: New file.
+	* gdb.threads/continue-pending-after-query.exp: New file.
+
+2015-01-23  Jan Kratochvil  <jan.kratochvil@redhat.com>
+
+	* gdb.compile/compile.exp (pointer to jit function): New test.
+
 2015-01-14  Pedro Alves  <palves@redhat.com>
 	    Joel Brobecker  <brobecker@adacore.com>
 
