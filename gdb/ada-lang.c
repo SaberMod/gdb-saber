@@ -4393,15 +4393,14 @@ static struct ada_symbol_cache *
 ada_get_symbol_cache (struct program_space *pspace)
 {
   struct ada_pspace_data *pspace_data = get_ada_pspace_data (pspace);
-  struct ada_symbol_cache *sym_cache = pspace_data->sym_cache;
 
-  if (sym_cache == NULL)
+  if (pspace_data->sym_cache == NULL)
     {
-      sym_cache = XCNEW (struct ada_symbol_cache);
-      ada_init_symbol_cache (sym_cache);
+      pspace_data->sym_cache = XCNEW (struct ada_symbol_cache);
+      ada_init_symbol_cache (pspace_data->sym_cache);
     }
 
-  return sym_cache;
+  return pspace_data->sym_cache;
 }
 
 /* Clear all entries from the symbol cache.  */
@@ -5402,13 +5401,11 @@ ada_lookup_symbol_list_worker (const char *name0, const struct block *block0,
   const struct block *block;
   const char *name;
   const int wild_match_p = should_use_wild_match (name0);
-  int cacheIfUnique;
+  int syms_from_global_search = 0;
   int ndefns;
 
   obstack_free (&symbol_list_obstack, NULL);
   obstack_init (&symbol_list_obstack);
-
-  cacheIfUnique = 0;
 
   /* Search specified block and its superiors.  */
 
@@ -5453,13 +5450,14 @@ ada_lookup_symbol_list_worker (const char *name0, const struct block *block0,
      already performed this search before.  If we have, then return
      the same result.  */
 
-  cacheIfUnique = 1;
   if (lookup_cached_symbol (name0, namespace, &sym, &block))
     {
       if (sym != NULL)
         add_defn_to_vec (&symbol_list_obstack, sym, block);
       goto done;
     }
+
+  syms_from_global_search = 1;
 
   /* Search symbols from all global blocks.  */
  
@@ -5479,10 +5477,10 @@ done:
 
   ndefns = remove_extra_symbols (*results, ndefns);
 
-  if (ndefns == 0 && full_search)
+  if (ndefns == 0 && full_search && syms_from_global_search)
     cache_symbol (name0, namespace, NULL, NULL);
 
-  if (ndefns == 1 && full_search && cacheIfUnique)
+  if (ndefns == 1 && full_search && syms_from_global_search)
     cache_symbol (name0, namespace, (*results)[0].sym, (*results)[0].block);
 
   ndefns = remove_irrelevant_renamings (*results, ndefns, block0);

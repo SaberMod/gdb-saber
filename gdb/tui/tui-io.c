@@ -158,7 +158,10 @@ tui_putc (char c)
   tui_puts (buf);
 }
 
-/* Print the string in the curses command window.  */
+/* Print the string in the curses command window.
+   The output is buffered.  It is up to the caller to refresh the screen
+   if necessary.  */
+
 void
 tui_puts (const char *string)
 {
@@ -178,7 +181,20 @@ tui_puts (const char *string)
       else if (tui_skip_line != 1)
         {
           tui_skip_line = -1;
-          waddch (w, c);
+	  /* Expand TABs, since ncurses on MS-Windows doesn't.  */
+	  if (c == '\t')
+	    {
+	      int line, col;
+
+	      getyx (w, line, col);
+	      do
+		{
+		  waddch (w, ' ');
+		  col++;
+		} while ((col % 8) != 0);
+	    }
+	  else
+	    waddch (w, c);
         }
       else if (c == '\n')
         tui_skip_line = -1;
@@ -187,10 +203,6 @@ tui_puts (const char *string)
          TUI_CMD_WIN->detail.command_info.curch);
   TUI_CMD_WIN->detail.command_info.start_line
     = TUI_CMD_WIN->detail.command_info.cur_line;
-
-  /* We could defer the following.  */
-  wrefresh (w);
-  fflush (stdout);
 }
 
 /* Readline callback.
@@ -256,6 +268,16 @@ tui_redisplay_readline (void)
           waddch (w, '^');
           waddch (w, CTRL_CHAR (c) ? UNCTRL (c) : '?');
 	}
+      else if (c == '\t')
+	{
+	  /* Expand TABs, since ncurses on MS-Windows doesn't.  */
+	  getyx (w, line, col);
+	  do
+	    {
+	      waddch (w, ' ');
+	      col++;
+	    } while ((col % 8) != 0);
+	}
       else
 	{
           waddch (w, c);
@@ -319,6 +341,7 @@ tui_readline_output (int error, gdb_client_data data)
     {
       buf[size] = 0;
       tui_puts (buf);
+      tui_refresh_cmd_win ();
     }
 }
 #endif
@@ -370,6 +393,7 @@ print_filename (const char *to_print, const char *full_pathname)
     {
       PUTX (*s);
     }
+  tui_refresh_cmd_win ();
   return printed_len;
 }
 
@@ -425,9 +449,11 @@ tui_rl_display_match_list (char **matches, int len, int max)
       xsnprintf (msg, sizeof (msg),
 		 "\nDisplay all %d possibilities? (y or n)", len);
       tui_puts (msg);
+      tui_refresh_cmd_win ();
       if (get_y_or_n () == 0)
 	{
 	  tui_puts ("\n");
+	  tui_refresh_cmd_win ();
 	  return;
 	}
     }
@@ -499,6 +525,7 @@ tui_rl_display_match_list (char **matches, int len, int max)
 	}
       tui_putc ('\n');
     }
+  tui_refresh_cmd_win ();
 }
 
 /* Setup the IO for curses or non-curses mode.
@@ -724,6 +751,59 @@ tui_getc (FILE *fp)
   return ch;
 }
 
+/* Utility function to expand TABs in a STRING into spaces.  STRING
+   will be displayed starting at column COL, and is assumed to include
+   no newlines.  The returned expanded string is malloc'ed.  */
+
+char *
+tui_expand_tabs (const char *string, int col)
+{
+  int n_adjust;
+  const char *s;
+  char *ret, *q;
+
+  /* 1. How many additional characters do we need?  */
+  for (n_adjust = 0, s = string; s; )
+    {
+      s = strpbrk (s, "\t");
+      if (s)
+	{
+	  col += (s - string) + n_adjust;
+	  /* Adjustment for the next tab stop, minus one for the TAB
+	     we replace with spaces.  */
+	  n_adjust += 8 - (col % 8) - 1;
+	  s++;
+	}
+    }
+
+  /* Allocate the copy.  */
+  ret = q = xmalloc (strlen (string) + n_adjust + 1);
+
+  /* 2. Copy the original string while replacing TABs with spaces.  */
+  for (s = string; s; )
+    {
+      char *s1 = strpbrk (s, "\t");
+      if (s1)
+	{
+	  if (s1 > s)
+	    {
+	      strncpy (q, s, s1 - s);
+	      q += s1 - s;
+	      col += s1 - s;
+	    }
+	  do {
+	    *q++ = ' ';
+	    col++;
+	  } while ((col % 8) != 0);
+	  s1++;
+	}
+      else
+	strcpy (q, s);
+      s = s1;
+    }
+
+  return ret;
+}
 
 /* Cleanup when a resize has occured.
    Returns the character that must be processed.  */

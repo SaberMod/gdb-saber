@@ -1,3 +1,52 @@
+2015-02-04  Doug Evans  <dje@google.com>
+	    Pedro Alves  <palves@redhat.com>
+	    Eli Zaretskii  <eliz@gnu.org>
+
+	PR tui/17810
+	* tui/tui-command.c (tui_refresh_cmd_win): New function.
+	* tui/tui-command.c (tui_refresh_cmd_win): Declare.
+	* tui/tui-file.c: #include tui/tui-command.h.
+	(tui_file_fputs): Refresh command window if stream is not gdb_stdout.
+	(tui_file_flush): Refresh command window if stream is gdb_stdout.
+	* tui/tui-io.c (tui_puts): Remove calls to wrefresh, fflush.
+	(tui_readline_output): Call tui_refresh_cmd_win.
+	(print_filename): Likewise.
+	(tui_rl_display_match_list): Likewise.
+
+2015-02-03  Jan Kratochvil  <jan.kratochvil@redhat.com>
+
+	Filter out inferior gcc option -fpreprocessed.
+	* compile/compile.c (filter_args): New function.
+	(get_args): Use it.
+
+2015-02-02  Joel Brobecker  <brobecker@adacore.com>
+
+	PR gdb/17856:
+	* ada-lang.c (ada_lookup_symbol_list_worker): Do not re-cache
+	results found in the cache.
+
+2015-02-02  Joel Brobecker  <brobecker@adacore.com>
+
+	PR gdb/17854:
+	* ada-lang.c (ada_get_symbol_cache): Set pspace_data->sym_cache
+	when allocating a new one.
+
+2015-01-31  Joel Brobecker  <brobecker@adacore.com>
+
+	PR symtab/17855
+	* symfile.c (clear_symtab_users): Move call to breakpoint_re_set
+	to end.
+
+2015-01-31  Eli Zaretskii  <eliz@gnu.org>
+
+	* tui/tui-io.c (tui_expand_tabs): New function.
+	(tui_puts, tui_redisplay_readline): Expand TABs into the
+	appropriate number of spaces.
+	* tui/tui-regs.c: Include tui-io.h.
+	(tui_register_format): Call tui_expand_tabs to expand TABs into
+	the appropriate number of spaces.
+	* tui/tui-io.h: Add prototype for tui_expand_tabs.
+
 2015-01-29  Doug Evans  <dje@google.com>
 
 	PR symtab/17890
